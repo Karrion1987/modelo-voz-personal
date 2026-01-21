@@ -58,6 +58,11 @@ async def transcribe_audio(file: UploadFile = File(...)):
 
 if __name__ == "__main__":
     import uvicorn
-
-    uvicorn.run("app:app", host="127.0.0.1", port=8000, reload=False)
+    
+    # Para producción: usar 0.0.0.0 para que sea accesible desde fuera
+    # El puerto puede venir de variable de entorno (Railway, Render, etc.)
+    host = os.getenv("HOST", "0.0.0.0")
+    port = int(os.getenv("PORT", 8000))
+    
+    uvicorn.run("app:app", host=host, port=port, reload=False)
 

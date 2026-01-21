@@ -6,14 +6,14 @@ API REST construida con FastAPI que utiliza Whisper para transcribir audios a te
 
 ### Requisitos
 - Python 3.11 o superior
-- Windows (incluye ffmpeg portable)
+- Windows/Linux/Mac (ffmpeg incluido para Windows, instalar en Linux/Mac)
 
 ### Pasos
 
-1. **Clonar o descargar el proyecto**
+1. **Clonar el proyecto desde GitHub**
 ```bash
-git clone <tu-repositorio>
-cd "Modelo de audio IA"
+git clone https://github.com/TU-USUARIO/TU-REPO.git
+cd TU-REPO
 ```
 
 2. **Instalar dependencias**
@@ -27,6 +27,10 @@ python app.py
 ```
 
 El servidor estará disponible en `http://127.0.0.1:8000`
+
+📖 **Guías detalladas:**
+- `QUICK_START.md` - Inicio rápido
+- `COMO_USAR.md` - Guía completa de uso y despliegue
 
 ## 📖 Uso
 
