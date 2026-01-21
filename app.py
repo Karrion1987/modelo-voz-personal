@@ -5,7 +5,7 @@ import shutil
 
 from fastapi import FastAPI, File, UploadFile
 from pydantic import BaseModel
-import whisper
+from faster_whisper import WhisperModel
 
 
 class TranscriptionResponse(BaseModel):
@@ -29,7 +29,8 @@ def ensure_ffmpeg_on_path() -> None:
 
 # Inicialización del modelo al arrancar el servidor
 ensure_ffmpeg_on_path()
-model = whisper.load_model("tiny")
+# Modelo ligero para CPU (Railway). Si luego quieres más precisión: "small"
+model = WhisperModel("tiny", device="cpu", compute_type="int8")
 
 
 @app.get("/")
@@ -48,8 +49,8 @@ async def transcribe_audio(file: UploadFile = File(...)):
         tmp_path = tmp.name
 
     try:
-        result = model.transcribe(tmp_path, language="es")
-        text = result.get("text", "").strip()
+        segments, _info = model.transcribe(tmp_path, language="es", beam_size=5)
+        text = " ".join(seg.text for seg in segments).strip()
     finally:
         Path(tmp_path).unlink(missing_ok=True)
 

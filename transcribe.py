@@ -2,7 +2,7 @@ import csv
 import os
 from pathlib import Path
 
-import whisper
+from faster_whisper import WhisperModel
 
 
 DATA_DIR = Path("data/whatsapp")
@@ -33,15 +33,16 @@ def main() -> None:
     if not files:
         raise SystemExit(f"No audio files found in {DATA_DIR}")
 
-    model = whisper.load_model(MODEL_NAME)
+    model = WhisperModel(MODEL_NAME, device="cpu", compute_type="int8")
 
     with OUTPUT_CSV.open("w", newline="", encoding="utf-8") as f:
         writer = csv.writer(f)
         writer.writerow(["path", "text"])
         for audio_path in files:
             print(f"Transcribing {audio_path.name} ...")
-            result = model.transcribe(str(audio_path), language="es")
-            writer.writerow([str(audio_path), result["text"].strip()])
+            segments, _info = model.transcribe(str(audio_path), language="es", beam_size=5)
+            text = " ".join(seg.text for seg in segments).strip()
+            writer.writerow([str(audio_path), text])
 
     print(f"Wrote {len(files)} rows to {OUTPUT_CSV}")
 
